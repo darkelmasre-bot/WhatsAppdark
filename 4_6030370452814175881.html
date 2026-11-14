@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة استعلامات النظام الشامل - خدمة عملاء فودافون</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* خلفية رمادية متناسقة تماماً مع لون خلفية الأيقونة في الصورة */
+            background-color: #ededed;
+            color: #222;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-top: 5px solid #E60000;
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .header-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* تصميم شعار فودافون تماماً مثل الصورة المرفقة */
+        .vodafone-logo {
+            width: 42px;
+            height: 42px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* الدائرة الحمراء الخارجية في الشعار */
+        .vodafone-logo::before {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-color: #E60000;
+            border-radius: 50%;
+        }
+
+        /* الدائرة البيضاء الداخلية وتفصيل الشعار */
+        .vodafone-logo::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: inset 4px -2px 0px 0px #E60000;
+        }
+
+        .header h2 {
+            color: #1a1a1a;
+            font-size: 1.25rem;
+        }
+
+        .badge {
+            background-color: #E60000;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-section input {
+            flex: 1;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-section input:focus {
+            border-color: #E60000;
+            box-shadow: 0 0 6px rgba(230, 0, 0, 0.2);
+            background-color: #fff;
+        }
+
+        .search-section button {
+            background-color: #E60000;
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-section button:hover {
+            background-color: #b30000;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            color: #E60000;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .result-panel {
+            display: none;
+            background-color: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #E60000;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .grid-wide {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .grid-wide:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-card {
+            background-color: #f4f4f4;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-right: 3px solid #E60000;
+            border-top: 1px solid #e5e5e5;
+            border-left: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: rgba(0, 230, 118, 0.15);
+            color: #008a3e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .footer-note {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="container">
+        <div class="header">
+            <div class="header-title-wrapper">
+                <div class="vodafone-logo"></div>
+                <h2>فودافون مصر - نظام خدمة العملاء المركزي (CCBS)</h2>
+            </div>
+            <span class="badge">بيئة العمل الرسمية</span>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="targetInput" placeholder="أدخل رقم الهاتف المحمول أو الرقم القومي للعميل..." maxlength="14">
+            <button onclick="fetchSimulatedData()">استعلام شامل</button>
+        </div>
+
+        <div class="loader" id="loader">جاري جلب سجلات العميل والتحقق من النظام المركزي...</div>
+
+        <div class="result-panel" id="resultPanel">
+            
+            <div class="section-title">بيانات المشترك الأساسية</div>
+            <div class="grid-wide">
+                <div class="info-card">
+                    <div class="info-label">الاسم الكامل (رباعي)</div>
+                    <div class="info-value" id="resFullName">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">اسم الأم الثلاثي</div>
+                    <div class="info-value" id="resMotherName">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">الرقم القومي (14 رقم)</div>
+                    <div class="info-value" id="resNationalID">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">رقم الإقامة / جواز السفر</div>
+                    <div class="info-value" id="resPassport">-</div>
+                </div>
+            </div>
+
+            <div class="section-title">بيانات الخطوط والخدمات المرتبطة</div>
+            <div class="grid-wide">
+                <div class="info-card">
+                    <div class="info-label">رقم الهاتف المستعلم عنه</div>
+                    <div class="info-value" id="resPhone">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">حالة الخط الإدارية</div>
+                    <div class="info-value"><span class="status-badge" id="resStatus">نشط ومفعل</span></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">نظام التعاقد / الباقة</div>
+                    <div class="info-value" id="resPlan">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">تاريخ الإصدار / التفعيل</div>
+                    <div class="info-value" id="resActivationDate">-</div>
+                </div>
+            </div>
+
+            <div class="section-title">معلومات الموقع الجغرافي والاتصال</div>
+            <div class="grid-wide">
+                <div class="info-card">
+                    <div class="info-label">المحافظة / عنوان الفوترة</div>
+                    <div class="info-value" id="resAddress">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">البريد الإلكتروني المسجل</div>
+                    <div class="info-value" id="resEmail">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">إجمالي الخطوط المسجلة بالرقم القومي</div>
+                    <div class="info-value" id="resLinesCount">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">الرصيد المتاح حالياً</div>
+                    <div class="info-value" id="resBalance">-</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-note">
+            جميع الحقوق محفوظة © لشركة فودافون مصر - وحدة أنظمة دعم العملاء والعمليات المركزية.
+        </div>
+    </div>
+</div>
+
+<script>
+    const firstNames = ["محمود", "أحمد", "إبراهيم", "محمد", "خالد", "علي", "حسن", "يوسف"];
+    const midNames = ["عبدالله", "محمود", "علي", "سعيد", "حسين", "رجب", "إبراهيم"];
+    const lastNames = ["السيوفي", "عبدالعال", "القاضي", "الشريف", "المصري", "الرضواني", "منصور"];
+    const mothers = ["فاطمة أحمد", "زينب محمود", "عائشة إبراهيم", "مريم علي", "سناء حسن", "هدى عبدالحميد"];
+    const governorates = ["القاهرة - المعادي", "الجيزة - الدقي", "الإسكندرية - سموحة", "المنوفية - شبين الكوم", "الشرقية - الزقازيق", "قليوبية - بنها"];
+    const plansList = ["فليكس 90 الشهرية", "باقة ريد الاحترافية", "نظام الكارت المدفوع مقدماً", "نظام الشركات والأعمال (Business)"];
+
+    function fetchSimulatedData() {
+        const inputVal = document.getElementById('targetInput').value.trim();
+        const loader = document.getElementById('loader');
+        const resultPanel = document.getElementById('resultPanel');
+
+        if (!inputVal) {
+            alert("يرجى إدخال رقم الهاتف أو الرقم القومي لإتمام الاستعلام.");
+            return;
+        }
+
+        resultPanel.style.display = 'none';
+        loader.style.display = 'block';
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+
+            const rFirst = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const rMid = midNames[Math.floor(Math.random() * midNames.length)];
+            const rFather = firstNames[Math.floor(Math.random() * midNames.length)];
+            const rLast = lastNames[Math.floor(Math.random() * lastNames.length)];
+            
+            const fullName = `${rFirst} ${rMid} ${rFather} ${rLast}`;
+            const motherName = mothers[Math.floor(Math.random() * mothers.length)];
+            
+            const nationalID = "2" + Math.floor(Math.random() * 9000000000000 + 1000000000000);
+            const passportID = "A" + Math.floor(Math.random() * 9000000 + 1000000);
+            const address = governorates[Math.floor(Math.random() * governorates.length)];
+            const plan = plansList[Math.floor(Math.random() * plansList.length)];
+            const email = `${rFirst.toLowerCase()}.${rLast.toLowerCase()}@vodafone.com.eg`;
+            const balance = (Math.random() * 320).toFixed(2) + " ج.م";
+            const linesCount = Math.floor(Math.random() * 4) + 1;
+
+            document.getElementById('resFullName').textContent = fullName;
+            document.getElementById('resMotherName').textContent = motherName;
+            document.getElementById('resNationalID').textContent = nationalID;
+            document.getElementById('resPassport').textContent = passportID;
+            document.getElementById('resPhone').textContent = inputVal.length >= 10 ? inputVal : "010" + Math.floor(Math.random() * 90000000 + 10000000);
+            document.getElementById('resAddress').textContent = address;
+            document.getElementById('resPlan').textContent = plan;
+            document.getElementById('resEmail').textContent = email;
+            document.getElementById('resBalance').textContent = balance;
+            document.getElementById('resLinesCount').textContent = linesCount + " خطوط مسجلة";
+            document.getElementById('resActivationDate').textContent = "2023-05-14";
+
+            resultPanel.style.display = 'block';
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
